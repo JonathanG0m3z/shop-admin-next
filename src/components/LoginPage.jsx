@@ -1,16 +1,26 @@
 import { LockClosedIcon } from '@heroicons/react/24/solid';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
+import { useAuth } from '@hooks/useAuth';
+import Modal from '@common/Modal';
+import { useRouter } from 'next/router';
 
 export default function LoginPage() {
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
+  const [modal, setModal] = useState(false);
+  const auth = useAuth();
+  const router = useRouter();
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const email = emailRef.current.value;
     const password = passwordRef.current.value;
 
-    console.log(email+" "+password);
+    auth.signIn(email, password).then(() => {
+      router.push('/dashboard');
+    }).catch(err => {
+      setModal(true);
+    })
   };
 
   return (
@@ -83,6 +93,11 @@ export default function LoginPage() {
                 </button>
               </div>
             </form>
+            <Modal 
+              open={modal}
+              setOpen={setModal}
+              children="Incorrect password"
+            />
         </div>
       </div>
     </>
