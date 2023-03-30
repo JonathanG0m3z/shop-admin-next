@@ -1,34 +1,83 @@
-import { Chart } from "@common/Chart";
+import { Fragment, useState } from 'react'
+import {
+  CheckIcon,
+  ChevronDownIcon,
+} from '@heroicons/react/20/solid'
+import { Menu, Transition } from '@headlessui/react'
 import Paginator from "@common/Paginator";
 import useFetch from "@hooks/useFetch";
 import endPoints from "@services/api";
-import { useState } from "react";
+import Modal from '@common/Modal';
 
 const PRODUCT_LIMIT = 5;
 
-export default function Dashboard() {
+export default function Products() {
   const [offsetProducts, setOffsetProducts] = useState(0);
+  const [open, setOpen] = useState(false);
 
   const products = useFetch(endPoints.products.getProducts(PRODUCT_LIMIT, offsetProducts), offsetProducts);
   const totalProducts = useFetch(endPoints.products.getProducts(0, 0)).length;
-
-  const categoryNames = products?.map(product=>product.category);
-  const categoryCount = categoryNames?.map(category=>category.name);
-  
-  const countOcurrences = (arr) => arr.reduce((prev, curr) => ((prev[curr] = ++prev[curr] || 1), prev),{});
-
-  const data = {
-    datasets: [{
-      label: "Categories",
-      data: countOcurrences(categoryCount),
-      borderWidth: 2,
-      backgroundColor: [' #ffbb11',' #c0c0c0',' #50AF95','#f3ba2f','#2a71dO']
-    }]
-  };
   return (
     <>
-      <Chart className="mb-8 mt-2" chartData={data} />
-      <div className="flex flex-col">
+    <div className="lg:flex lg:items-center lg:justify-between">
+      <div className="min-w-0 flex-1">
+        <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
+          List of products
+        </h2>
+      </div>
+      <div className="mt-5 flex lg:mt-0 lg:ml-4">
+        <span className="sm:ml-3">
+          <button
+            onClick={()=>setOpen(true)}
+            type="button"
+            className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          >
+            <CheckIcon className="-ml-0.5 mr-1.5 h-5 w-5" aria-hidden="true" />
+            Create
+          </button>
+        </span>
+        <Menu as="div" className="relative ml-3 sm:hidden">
+          <Menu.Button className="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:ring-gray-400">
+            More
+            <ChevronDownIcon className="-mr-1 ml-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
+          </Menu.Button>
+
+          <Transition
+            as={Fragment}
+            enter="transition ease-out duration-200"
+            enterFrom="transform opacity-0 scale-95"
+            enterTo="transform opacity-100 scale-100"
+            leave="transition ease-in duration-75"
+            leaveFrom="transform opacity-100 scale-100"
+            leaveTo="transform opacity-0 scale-95"
+          >
+            <Menu.Items className="absolute right-0 z-10 mt-2 -mr-1 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+              <Menu.Item>
+                {({ active }) => (
+                  <a
+                    href="#"
+                    className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                  >
+                    Edit
+                  </a>
+                )}
+              </Menu.Item>
+              <Menu.Item>
+                {({ active }) => (
+                  <a
+                    href="#"
+                    className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                  >
+                    View
+                  </a>
+                )}
+              </Menu.Item>
+            </Menu.Items>
+          </Transition>
+        </Menu>
+      </div>
+    </div>
+    <div className="flex flex-col">
         <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
             <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
@@ -95,6 +144,9 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+      <Modal open={open} setOpen={setOpen}>
+        <h1>Hello world</h1>
+      </Modal>
     </>
-  );
+  )
 }
