@@ -8,6 +8,7 @@ import Paginator from "@common/Paginator";
 import useFetch from "@hooks/useFetch";
 import endPoints from "@services/api";
 import Modal from '@common/Modal';
+import FormProduct from '@components/FormProducts';
 
 const PRODUCT_LIMIT = 5;
 
@@ -145,7 +146,7 @@ export default function Products() {
         </div>
       </div>
       <Modal open={open} setOpen={setOpen}>
-        <h1>Hello world</h1>
+        <FormProduct />
       </Modal>
     </>
   )

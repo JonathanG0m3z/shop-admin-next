@@ -28,6 +28,7 @@ export default function Dashboard() {
   return (
     <>
       <Chart className="mb-8 mt-2" chartData={data} />
+      {totalProducts > 0 && <Paginator totalItems={totalProducts} itemsPerPage={PRODUCT_LIMIT} setOffset={setOffsetProducts} neighbours={3}></Paginator>}
       <div className="flex flex-col">
         <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
@@ -91,7 +92,6 @@ export default function Dashboard() {
                 </tbody>
               </table>
             </div>
-            {totalProducts > 0 && <Paginator totalItems={totalProducts} itemsPerPage={PRODUCT_LIMIT} setOffset={setOffsetProducts} neighbours={3}></Paginator>}
           </div>
         </div>
       </div>
