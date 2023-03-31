@@ -14,9 +14,8 @@ export default function FormProduct() {
       categoryId: parseInt(formData.get('category')),
       images: [formData.get('images').name],
     };
-    addProduct(data).then((response) => {
-      console.log(response);
-    });
+    addProduct(data).then(response =>console.log(response))
+    .catch(err => console.log(err));
   };
 
   return (

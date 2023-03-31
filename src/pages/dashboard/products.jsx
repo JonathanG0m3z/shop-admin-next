@@ -9,17 +9,21 @@ import useFetch from "@hooks/useFetch";
 import endPoints from "@services/api";
 import Modal from '@common/Modal';
 import FormProduct from '@components/FormProducts';
+import useAlert from '@hooks/useAlert';
+import Alert from '@common/alert';
 
 const PRODUCT_LIMIT = 5;
 
 export default function Products() {
   const [offsetProducts, setOffsetProducts] = useState(0);
   const [open, setOpen] = useState(false);
+  const {alert, setAlert, toggleAlert} = useAlert();
 
   const products = useFetch(endPoints.products.getProducts(PRODUCT_LIMIT, offsetProducts), offsetProducts);
   const totalProducts = useFetch(endPoints.products.getProducts(0, 0)).length;
   return (
     <>
+    <Alert alert={alert} handleClose={toggleAlert} />
     <div className="lg:flex lg:items-center lg:justify-between">
       <div className="min-w-0 flex-1">
         <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
@@ -146,7 +150,7 @@ export default function Products() {
         </div>
       </div>
       <Modal open={open} setOpen={setOpen}>
-        <FormProduct />
+        <FormProduct setAlert={setAlert} setOpen={setOpen} />
       </Modal>
     </>
   )
