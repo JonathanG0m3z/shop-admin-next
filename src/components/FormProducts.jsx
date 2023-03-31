@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import { addProduct } from '@services/api/product';
 
-export default function FormProduct() {
+export default function FormProduct({setOpen, setAlert}) {
   const formRef = useRef(null);
 
   const handleSubmit = (event) => {
@@ -14,8 +14,23 @@ export default function FormProduct() {
       categoryId: parseInt(formData.get('category')),
       images: [formData.get('images').name],
     };
-    addProduct(data).then(response =>console.log(response))
-    .catch(err => console.log(err));
+    addProduct(data).then(() =>{
+      setAlert({
+        active: true,
+        message: 'Product added successfully',
+        type: 'success',
+        autoClose: false,
+      });
+      setOpen(false);
+    }).catch(err => {
+      setAlert({
+        active: true,
+        message: err.message,
+        type: 'error',
+        autoClose: false,
+      });
+      setOpen(false);
+    });
   };
 
   return (
