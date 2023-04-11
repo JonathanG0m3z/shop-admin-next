@@ -2,6 +2,7 @@ import { Fragment, useState } from 'react'
 import {
   CheckIcon,
   ChevronDownIcon,
+  XCircleIcon,
 } from '@heroicons/react/20/solid'
 import { Menu, Transition } from '@headlessui/react'
 import Paginator from "@common/Paginator";
@@ -11,6 +12,7 @@ import Modal from '@common/Modal';
 import FormProduct from '@components/FormProducts';
 import useAlert from '@hooks/useAlert';
 import Alert from '@common/alert';
+import { deleteProduct } from '@services/api/product';
 
 const PRODUCT_LIMIT = 5;
 
@@ -21,6 +23,24 @@ export default function Products() {
 
   const products = useFetch(endPoints.products.getProducts(PRODUCT_LIMIT, offsetProducts), offsetProducts);
   const totalProducts = useFetch(endPoints.products.getProducts(0, 0)).length;
+
+  const handleDelete = (id) => {
+    deleteProduct(id).then(() => {
+      setAlert({
+        active: true,
+        message: 'Delete product successfully',
+        type: 'success',
+        autoClose: true,
+      });
+    }).catch((error) => {
+      setAlert({
+        active: true,
+        message: error,
+        type: 'error',
+        autoClose: true,
+      });
+    })
+  };
   return (
     <>
     <Alert alert={alert} handleClose={toggleAlert} />
@@ -131,12 +151,12 @@ export default function Products() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product?.id}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <a href="#" className="text-indigo-600 hover:text-indigo-900">
+                        <a href={`/dashboard/edit/${product?.id}`} className="text-indigo-600 hover:text-indigo-900">
                           Edit
                         </a>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <a href="#" className="text-red-600 hover:text-red-900">
+                        <a onClick={()=>handleDelete(product?.id)} aria-hidden="true" href="#" className="text-red-600 hover:text-red-900">
                           Delete
                         </a>
                       </td>
